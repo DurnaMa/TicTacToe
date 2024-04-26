@@ -6,8 +6,8 @@ table,
 th,
 td {
     border: 1px solid black;
-    width: 100px;
-    height: 100px;
+    width: 400px;
+    height: 300px;
     text-align: center;
     font-size: 36px;
     font-weight: bold;
