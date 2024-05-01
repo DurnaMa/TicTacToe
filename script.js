@@ -1,4 +1,5 @@
-let fields = [null, "circle", "cross", null, null, "cross", "circle", null, null];
+let fields = [null, null, null, null, null, null, null, null, null];
+let currentSymbol = "circle"; // Startsymbol
 
 function init() {
     render();
@@ -15,12 +16,12 @@ function render() {
             const index = i * 3 + j;
             let symbol = "";
             if (fields[index] === "circle") {
-                symbol += generateCircleSVG(); // Hier Farbe festlegen, z.B. blau
+                symbol += generateCircleSVG();
             } else if (fields[index] === "cross") {
                 symbol += generateAnimatedCrossSVG();
             }
             // Falls weder Kreis noch Kreuz, füge ein leeres Symbol hinzu
-            tableHTML += "<td>" + symbol + "</td>";
+            tableHTML += `<td onclick="placeSymbol(${index}, this)">${symbol}</td>`;
         }
         tableHTML += "</tr>";
     }
@@ -29,6 +30,26 @@ function render() {
     // Tabelle in den Container einfügen
     container.innerHTML = tableHTML;
 }
+
+function placeSymbol(index, cell) {
+    if (fields[index] === null) {
+        // Abwechselnd "circle" oder "cross" einfügen
+        fields[index] = currentSymbol;
+        // HTML-Code für das eingefügte Symbol generieren
+        const symbolHTML =
+            currentSymbol === "circle"
+                ? generateCircleSVG()
+                : generateAnimatedCrossSVG();
+        // HTML-Code in das angeklickte <td>-Element einfügen
+        cell.innerHTML = symbolHTML;
+        // onclick-Funktion von dem angeklickten <td>-Element entfernen
+        cell.removeAttribute("onclick");
+        // Das Symbol wechseln
+        currentSymbol = currentSymbol === "circle" ? "cross" : "circle";
+    }
+}
+
+init();
 
 function generateCircleSVG() {
     const color = "#00B0EF";

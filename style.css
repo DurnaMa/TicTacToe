@@ -25,8 +25,12 @@ td {
     font-size: 36px;
     font-weight: bold;
     border: 5px solid #fff;
+    cursor: pointer;
 }
 
+td:hover{
+    background-color: rgba(255, 255, 255, 0.3);
+}
 table {
     border-collapse: collapse;
     margin: 0 auto;
