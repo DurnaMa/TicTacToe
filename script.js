@@ -34,10 +34,38 @@ function render() {
 function makeMove(index) {
     if (fields[index] === null) {
         fields[index] = currentPlayer;
+        if (checkForWin()) {
+            drawWinLine();
+            return; // Beendet die Funktion frühzeitig, wenn jemand gewonnen hat
+        }
         render();
 
         currentPlayer = currentPlayer === "circle" ? "cross" : "circle";
     }
+}
+
+function checkForWin() {
+    const winCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Zeilen
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Spalten
+        [0, 4, 8], [2, 4, 6]            // Diagonalen
+    ];
+
+    for (const combination of winCombinations) {
+        if (fields[combination[0]] !== null && 
+            fields[combination[0]] === fields[combination[1]] && 
+            fields[combination[0]] === fields[combination[2]]) {
+            drawWinLine(combination); // Stelle sicher, dass die korrekte Kombination übergeben wird
+            return true;
+        }
+    }
+    return false;
+}
+
+function drawWinLine(winCombination) {
+    // Bestimme die Koordinaten der Gewinnlinie basierend auf der Gewinnkombination
+    console.log('Draw winning line for combination: ', winCombination);
+    // Implementierung der Linienzeichnung hier...
 }
 
 function generateCircleSVG() {
@@ -87,4 +115,37 @@ function generateCrossSVG() {
     `;
 
     return svgHtml;
+}
+
+function drawWinLine(winCombination) {
+    if (!winCombination) {
+        console.error('Invalid win combination');
+        return;
+    }
+
+    const table = document.querySelector("#content table");
+    if (!table) {
+        console.error('Table not found');
+        return;
+    }
+    const rect = table.getBoundingClientRect();
+
+    // Berechnungen wie zuvor beschrieben
+    const startCellIndex = winCombination[0];
+    const endCellIndex = winCombination[2];
+    const cellWidth = rect.width / 3;
+    const cellHeight = rect.height / 3;
+    const startX = (startCellIndex % 3) * cellWidth + cellWidth / 2;
+    const startY = Math.floor(startCellIndex / 3) * cellHeight + cellHeight / 2;
+    const endX = (endCellIndex % 3) * cellWidth + cellWidth / 2;
+    const endY = Math.floor(endCellIndex / 3) * cellHeight + cellHeight / 2;
+
+    const svg = document.createElement("svg");
+    svg.style.position = 'absolute';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    svg.style.width = `${rect.width}px`;
+    svg.style.height = `${rect.height}px`;
+    svg.innerHTML = `<line x1="${startX}" y1="${startY}" x2="${endX}" y2="${endY}" stroke="white" stroke-width="5"/>`;
+    document.getElementById("content").appendChild(svg);
 }
