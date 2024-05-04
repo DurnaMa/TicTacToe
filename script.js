@@ -1,75 +1,65 @@
 let fields = [null, null, null, null, null, null, null, null, null];
-let currentSymbol = "circle"; // Startsymbol
+let currentPlayer = "circle"; // Startet mit Kreis
 
 function init() {
     render();
 }
 
 function render() {
-    const container = document.getElementById("content");
+    const contentDiv = document.getElementById("content");
 
-    // HTML-Code für die Tabelle
-    let tableHTML = "<table>";
+    // Generate table HTML
+    let tableHtml = "<table>";
     for (let i = 0; i < 3; i++) {
-        tableHTML += "<tr>";
+        tableHtml += "<tr>";
         for (let j = 0; j < 3; j++) {
             const index = i * 3 + j;
             let symbol = "";
+            let onClick = `onclick="makeMove(${index})"`; // Hinzufügen des onclick Handlers
             if (fields[index] === "circle") {
-                symbol += generateCircleSVG();
+                symbol = generateCircleSVG();
+                onClick = ""; // Entfernt den onclick Handler, wenn das Feld besetzt ist
             } else if (fields[index] === "cross") {
-                symbol += generateAnimatedCrossSVG();
+                symbol = generateCrossSVG();
+                onClick = ""; // Entfernt den onclick Handler, wenn das Feld besetzt ist
             }
-            // Falls weder Kreis noch Kreuz, füge ein leeres Symbol hinzu
-            tableHTML += `<td onclick="placeSymbol(${index}, this)">${symbol}</td>`;
+            tableHtml += `<td ${onClick}>${symbol}</td>`; // Hinzufügen des onclick Attributes
         }
-        tableHTML += "</tr>";
+        tableHtml += "</tr>";
     }
-    tableHTML += "</table>";
+    tableHtml += "</table>";
 
-    // Tabelle in den Container einfügen
-    container.innerHTML = tableHTML;
+    // Set table HTML to contentDiv
+    contentDiv.innerHTML = tableHtml;
 }
 
-function placeSymbol(index, cell) {
+function makeMove(index) {
     if (fields[index] === null) {
-        // Abwechselnd "circle" oder "cross" einfügen
-        fields[index] = currentSymbol;
-        // HTML-Code für das eingefügte Symbol generieren
-        const symbolHTML =
-            currentSymbol === "circle"
-                ? generateCircleSVG()
-                : generateAnimatedCrossSVG();
-        // HTML-Code in das angeklickte <td>-Element einfügen
-        cell.innerHTML = symbolHTML;
-        // onclick-Funktion von dem angeklickten <td>-Element entfernen
-        cell.removeAttribute("onclick");
-        // Das Symbol wechseln
-        currentSymbol = currentSymbol === "circle" ? "cross" : "circle";
+        // Überprüft, ob das Feld leer ist
+        fields[index] = currentPlayer; // Setzt den aktuellen Spieler in das Feld
+        render(); // Neuzeichnen des Spielbretts
+
+        // Wechselt den Spieler
+        currentPlayer = currentPlayer === "circle" ? "cross" : "circle";
     }
 }
-
-init();
 
 function generateCircleSVG() {
-    const color = "#00B0EF";
-    const width = 150;
-    const height = 150;
+    const color = "#00B0EF"; // Farbe des Kreises
+    const width = 50; // Breite des SVG-Elements
+    const height = 50; // Höhe des SVG-Elements
+    const strokeWidth = 5; // Stärke der Linie des Kreises
+    const radius = 50 - strokeWidth / 2; // Radius des Kreises, angepasst um die Linienstärke
+    const circumference = 2 * Math.PI * radius; // Umfang des Kreises
 
+    // Erzeugen des SVG-HTML-Codes als String mit Template-Literal
     const svgHtml = `
-      <svg width="${width}" height="${height}" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="45" cy="45" r="40" fill="none" stroke="${color}" stroke-width="5">
-          <animateTransform 
-            attributeName="transform" 
-            attributeType="XML" 
-            type="rotate" 
-            from="0 45 45" 
-            to="360 45 45" 
-            dur="50s" 
-            repeatCount="1" 
-          />
-          <animate attributeName="r" from="0" to="40" dur="1s" fill="freeze" />
-          <animate attributeName="stroke-dasharray" from="0 251" to="251 0" dur="1s" fill="freeze" />
+      <svg width="${width}" height="${height}" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="${radius}" fill="none" stroke="${color}"
+                stroke-width="${strokeWidth}" stroke-dasharray="${circumference}"
+                stroke-dashoffset="${circumference}">
+          <animate attributeName="stroke-dashoffset" from="${circumference}" to="0"
+                   begin="0s" dur="125ms" fill="freeze" />
         </circle>
       </svg>
     `;
@@ -77,20 +67,27 @@ function generateCircleSVG() {
     return svgHtml;
 }
 
-function generateAnimatedCrossSVG() {
-    const color = "#FFC000";
-    const width = 150;
-    const height = 150;
+function generateCrossSVG() {
+    const color = "#FFC000"; // Farbe des Kreuzes
+    const width = 50; // Breite des SVG-Elements
+    const height = 50; // Höhe des SVG-Elements
+    const strokeWidth = 5; // Stärke der Linie des Kreuzes
+    const length = Math.sqrt(width * width + height * height); // Diagonale des SVG-Elements
 
+    // Erzeugen des SVG-HTML-Codes als String mit Template-Literal
     const svgHtml = `
-      <svg width="${width}" height="${height}" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="0" x2="${width}" y2="${height}" stroke="${color}" stroke-width="8">
-          <animate attributeName="x2" values="0; ${width}" dur="1s" fill="freeze" />
-          <animate attributeName="y2" values="0; ${height}" dur="1s" fill="freeze" />
+      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <line x1="0" y1="0" x2="${width}" y2="${height}"
+              stroke="${color}" stroke-width="${strokeWidth}" stroke-dasharray="${length}"
+              stroke-dashoffset="${length}">
+          <animate attributeName="stroke-dashoffset" from="${length}" to="0"
+                   begin="0s" dur="125ms" fill="freeze" />
         </line>
-        <line x1="${width}" y1="0" x2="0" y2="${height}" stroke="${color}" stroke-width="8">
-          <animate attributeName="x2" values="${width}; 0" dur="1s" fill="freeze" />
-          <animate attributeName="y2" values="0; ${height}" dur="1s" fill="freeze" />
+        <line x1="${width}" y1="0" x2="0" y2="${height}"
+              stroke="${color}" stroke-width="${strokeWidth}" stroke-dasharray="${length}"
+              stroke-dashoffset="${length}">
+          <animate attributeName="stroke-dashoffset" from="${length}" to="0"
+                   begin="0s" dur="125ms" fill="freeze" />
         </line>
       </svg>
     `;
