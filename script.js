@@ -78,15 +78,15 @@ function drawWinLine(winCombination) {
 
 function generateCircleSVG() {
     const color = "#00B0EF";
-    const width = 50;
-    const height = 50;
-    const strokeWidth = 5;
-    const radius = 50 - strokeWidth / 2;
+    const width = 200;
+    const height = 200;
+    const strokeWidth = 6;
+    const radius = 100 - strokeWidth;
     const circumference = 2 * Math.PI * radius;
 
     const svgHtml = `
-      <svg width="${width}" height="${height}" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="${radius}" fill="none" stroke="${color}"
+      <svg width="${width}" height="${height}" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="${radius}" fill="none" stroke="${color}"
                 stroke-width="${strokeWidth}" stroke-dasharray="${circumference}"
                 stroke-dashoffset="${circumference}">
           <animate attributeName="stroke-dashoffset" from="${circumference}" to="0"
@@ -100,9 +100,9 @@ function generateCircleSVG() {
 
 function generateCrossSVG() {
     const color = "#FFC000";
-    const width = 50;
-    const height = 50;
-    const strokeWidth = 5;
+    const width = 200;
+    const height = 200;
+    const strokeWidth = 6;
     const length = Math.sqrt(width * width + height * height);
 
     const svgHtml = `

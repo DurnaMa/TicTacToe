@@ -1,9 +1,9 @@
 * {
-    background-color: #323232; /* Dunkelgraue Hintergrundfarbe */
-    font-family: "Open Sans", sans-serif; /* Setzt Open Sans als Schriftart */
-    margin: 0; /* Entfernt den Außenabstand */
-    padding: 0; /* Entfernt den Innenabstand */
-    color: white; /* Setzt die Textfarbe auf Weiß für bessere Lesbarkeit */
+    background-color: #323232; 
+    font-family: "Open Sans", sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    color: white; 
 }
 
 #playfield {
@@ -30,8 +30,8 @@ td:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
 td {
-    width: 75px;
-    height: 75px;
+    width: 200px;
+    height: 200px;
     text-align: center;
     font-size: 36px;
     font-weight: bold;
